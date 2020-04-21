@@ -1,0 +1,16 @@
+<html>
+    <header>
+        <title>Simulation phygital</title>
+        <link href="./../css/style.css" rel="stylesheet" type="text/css"></link>
+    </header>
+    <body>
+        <div id="background" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <img src="./../img/Magasin.png" id="img" alt="Magasin" onclick="clicked()">
+        </div>
+
+        <div id="characters">
+            <img src="./../img/Personnage.png" id="char1" alt="Personnage 1" draggable="true" ondragstart="drag(event, this.id)">
+        </div>
+    </body>
+    <script src="./../js/index.js" type="text/javascript" ></script>
+</html>
