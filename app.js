@@ -7,6 +7,7 @@ const app = express()
 
 const WebsiteRoutes = require('./src/Routes/WebsiteRoutes')
 const UserRoutes = require('./src/Routes/UsersRoutes')
+const ArticlesRoutes = require('./src/Routes/ArticlesRoutes')
 
 // config() va lire le fichier .env, et assigner globalement toutes les données de ce fichier dans process.env (accessible partout)
 dotenv.config()
@@ -36,6 +37,7 @@ app.use(compression())
 
 app.use('/', WebsiteRoutes)
 app.use('/users', UserRoutes)
+app.use('/articles', ArticlesRoutes)
 
 // Permet de gérer les erreurs 404
 // app.use((req, res, next) => {

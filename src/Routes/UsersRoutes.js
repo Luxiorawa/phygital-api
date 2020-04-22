@@ -39,4 +39,14 @@ router.delete(
     UserController.deleteUser
 )
 
+router.post(
+    '/login',
+    [
+        body('username').optional().isString(),
+        body('email').optional().isString(),
+        body('password').optional().isString().isLength(1),
+    ],
+    UserController.login
+)
+
 module.exports = router

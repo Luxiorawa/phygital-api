@@ -18,11 +18,11 @@ exports.select = async function (sql, args = []) {
 
         const [rows] = await pool.query(sql, args)
         if (rows.length === 1) {
-            return rows
+            return rows[0]
         }
     } catch (error) {
         console.log(`An error occured during select ${error}`)
-        new Error(error)
+        throw new Error(error)
     }
 }
 
@@ -35,7 +35,7 @@ exports.selectList = async function (sql, args = []) {
         }
     } catch (error) {
         console.log(`An error occured during selectList ${error}`)
-        new Error(error)
+        throw new Error(error)
     }
 }
 
@@ -48,7 +48,7 @@ exports.insert = async function (sql, args = []) {
         }
     } catch (error) {
         console.log(`An error occured during insert ${error}`)
-        new Error(error)
+        throw new Error(error)
     }
 }
 
@@ -61,7 +61,7 @@ exports.update = async function (sql, args = []) {
         }
     } catch (error) {
         console.log(`An error occured during update ${error}`)
-        new Error(error)
+        throw new Error(error)
     }
 }
 
@@ -74,6 +74,6 @@ exports.delete = async function (sql, args = []) {
         }
     } catch (error) {
         console.log(`An error occured during delete ${error}`)
-        new Error(error)
+        throw new Error(error)
     }
 }
