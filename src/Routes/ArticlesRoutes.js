@@ -6,9 +6,18 @@ const { body, param } = require('express-validator')
 router.get('/', ArticlesController.getArticles)
 
 router.get(
-    '/:articleId',
-    [param('articleId').isInt().isLength(1)],
+    '/:article_id',
+    [param('article_id').isInt().isLength(1)],
     ArticlesController.getArticle
+)
+
+router.post(
+    '/addToShoppingCart',
+    [
+        body('article_id').isInt().isLength(1),
+        body('quantity').isInt().isLength(1),
+    ],
+    ArticlesController.addToShoppingCart
 )
 
 router.post(
@@ -27,19 +36,19 @@ router.post(
 )
 
 router.post(
-    '/manageStock/:articleId',
+    '/manageStock/:article_id',
     [
-        param('articleId').isInt().isLength(1),
+        param('article_id').isInt().isLength(1),
         body('quantity').isInt(),
-        body('stockType').optional().isString().isLength(1),
+        body('stock_type').optional().isString().isLength(1),
     ],
     ArticlesController.manageStock
 )
 
 router.put(
-    '/:articleId',
+    '/:article_id',
     [
-        param('articleId').isInt().isLength(1),
+        param('article_id').isInt().isLength(1),
         body('name').optional().isString().isLength(1),
         body('price').optional().isDecimal(),
         body('description').optional().isString().isLength(1),
@@ -53,8 +62,8 @@ router.put(
 )
 
 router.delete(
-    '/:articleId',
-    [param('articleId').isInt().isLength(1)],
+    '/:article_id',
+    [param('article_id').isInt().isLength(1)],
     ArticlesController.deleteArticle
 )
 

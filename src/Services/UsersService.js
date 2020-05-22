@@ -5,7 +5,9 @@ exports.getAllUsers = () => {
 }
 
 exports.getUser = (userId) => {
-    return MysqlMiddleware.select(`SELECT * FROM users WHERE id = ?`, [userId])
+    return MysqlMiddleware.select(`SELECT * FROM users WHERE user_id = ?`, [
+        userId,
+    ])
 }
 
 exports.createUser = (userObject) => {

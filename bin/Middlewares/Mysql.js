@@ -12,7 +12,7 @@ const pool = mysql.createPool({
     waitForConnections: true,
 })
 
-exports.select = async function (sql, args = []) {
+async function select(sql, args = []) {
     try {
         console.log(`[MySQL] - Executing following select : ${sql}`)
 
@@ -26,7 +26,7 @@ exports.select = async function (sql, args = []) {
     }
 }
 
-exports.selectList = async function (sql, args = []) {
+async function selectList(sql, args = []) {
     try {
         console.log(`[MySQL] - Executing following selectList : ${sql}`)
         const [rows] = await pool.query(sql, args)
@@ -39,10 +39,18 @@ exports.selectList = async function (sql, args = []) {
     }
 }
 
-exports.insert = async function (sql, args = []) {
+async function insert(
+    sql,
+    args = [],
+    connectionParam = null,
+    autoRelease = true
+) {
     try {
+        let connection =
+            connectionParam === null ? await getConnection() : connectionParam
         console.log(`[MySQL] - Executing following insert : ${sql}`)
-        const [rows] = await pool.query(sql, args)
+        const [rows] = await connection.query(sql, args)
+        autoRelease === true ? await connection.release() : null
         if (rows.affectedRows === 1) {
             return rows.insertId
         }
@@ -52,10 +60,18 @@ exports.insert = async function (sql, args = []) {
     }
 }
 
-exports.update = async function (sql, args = []) {
+async function update(
+    sql,
+    args = [],
+    connectionParam = null,
+    autoRelease = true
+) {
     try {
+        let connection =
+            connectionParam === null ? await getConnection() : connectionParam
         console.log(`[MySQL] - Executing following update : ${sql}`)
-        const [rows] = await pool.query(sql, args)
+        const [rows] = await connection.query(sql, args)
+        autoRelease === true ? await connection.release() : null
         if (rows.affectedRows >= 1) {
             return true
         }
@@ -65,10 +81,18 @@ exports.update = async function (sql, args = []) {
     }
 }
 
-exports.delete = async function (sql, args = []) {
+async function remove(
+    sql,
+    args = [],
+    connectionParam = null,
+    autoRelease = true
+) {
     try {
+        let connection =
+            connectionParam === null ? await getConnection() : connectionParam
         console.log(`[MySQL] - Executing following delete : ${sql}`)
-        const [rows] = await pool.query(sql, args)
+        const [rows] = await connection.query(sql, args)
+        autoRelease === true ? await connection.release() : null
         if (rows.affectedRows >= 1) {
             return true
         }
@@ -76,4 +100,21 @@ exports.delete = async function (sql, args = []) {
         console.log(`An error occured during delete ${error}`)
         throw new Error(error)
     }
+}
+
+async function getConnection() {
+    try {
+        return await pool.getConnection()
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+module.exports = {
+    select: select,
+    selectList: selectList,
+    insert: insert,
+    update: update,
+    delete: remove,
+    getConnection: getConnection,
 }
