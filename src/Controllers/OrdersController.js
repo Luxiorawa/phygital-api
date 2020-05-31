@@ -45,23 +45,17 @@ exports.getOrdersHistory = async (req, res) => {
     return res.json({ status: 'Success', results: orders })
 }
 
-// exports.createOrder = async (req, res) => {
-//     const errors = validationResult(req)
+exports.getShoppingCart = async (req, res) => {
+    const errors = validationResult(req)
 
-//     if (!errors.isEmpty()) {
-//         return res.status(422).json({ errors: errors.array() })
-//     }
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() })
+    }
 
-//     const orderObject = {
-//         user_id: req.session.user.id,
-//         state: req.body.state,
-//         price: req.body.price,
-//     }
+    const shoppingCart = await OrdersService.getCurrentShoppingCartForUser(req.session.user.id)
 
-//     const orderCreatedId = await OrdersService.createOrder(orderObject)
-
-//     return res.json({ status: 'Success', results: orderCreatedId })
-// }
+    return res.json({ status: 'Success', results: shoppingCart })
+}
 
 exports.buyShoppingCart = async (req, res) => {
     const errors = validationResult(req)
@@ -77,25 +71,34 @@ exports.buyShoppingCart = async (req, res) => {
         const shoppingCart = await OrdersService.getCurrentShoppingCartForUser(
             userId
         )
-        await connection.beginTransaction()
 
-        const totalPrice = await getTotalPriceForShoppingCartAndManageQuantity(
-            shoppingCart,
-            connection
-        )
+        if(shoppingCart) {
+            await connection.beginTransaction()
 
-        let status = await OrdersService.updateOrderStateByShoppingCartId(
-            shoppingCart[0].shopping_cart_id,
-            connection
-        )
+            const totalPrice = await getTotalPriceForShoppingCartAndManageQuantity(
+                shoppingCart,
+                connection
+            )
 
-        await connection.commit()
+            let status = await OrdersService.updateOrderStateByShoppingCartId(
+                shoppingCart[0].shopping_cart_id,
+                connection
+            )
 
-        return res.json({
-            status: 'Success',
-            orderIdUpdated: status,
-            totalPrice: totalPrice,
-        })
+            await connection.commit()
+
+            return res.json({
+                status: 'Success',
+                orderIdUpdated: status,
+                totalPrice: totalPrice,
+            })
+        }
+        else {
+            return res.json({
+                status: 'Failed',
+                message: 'Shopping cart is empty'
+            })
+        }
     } catch (error) {
         if (connection) {
             await connection.rollback()
@@ -119,17 +122,17 @@ exports.updateOrder = async (req, res) => {
         ? (orderObject.shopping_cart_id = req.body.shopping_cart_id)
         : null
     req.body.article_id ? (orderObject.article_id = req.body.article_id) : null
-    req.session.user.id ? (orderObject.user_id = req.body.user_id) : null
+    req.body.user_id ? (orderObject.user_id = req.body.user_id) : null
     req.body.state ? (orderObject.state = req.body.state) : null
     req.body.price ? (orderObject.price = req.body.price) : null
     req.body.quantity ? (orderObject.quantity = req.body.quantity) : null
 
-    const orderIdUpdated = await OrdersService.updateOrder(
+    const isOrderUpdated = await OrdersService.updateOrder(
         orderObject,
-        req.param.order_id
+        req.params.order_id
     )
 
-    return res.json({ status: 'Success', results: orderIdUpdated })
+    return res.json({ status: 'Success', isOrderUpdated: isOrderUpdated })
 }
 
 exports.deleteOrder = async (req, res) => {
@@ -139,9 +142,9 @@ exports.deleteOrder = async (req, res) => {
         return res.status(422).json({ errors: errors.array() })
     }
 
-    const deletedOrder = await OrdersService.deleteOrder(req.params.order_id)
+    const isOrderDeleted = await OrdersService.deleteOrder(req.params.order_id)
 
-    return res.json({ status: 'Success', deletedOrderId: deletedOrder })
+    return res.json({ status: 'Success', isOrderDeleted: isOrderDeleted })
 }
 
 async function getTotalPriceForShoppingCartAndManageQuantity(
@@ -150,11 +153,11 @@ async function getTotalPriceForShoppingCartAndManageQuantity(
 ) {
     let totalPrice = 0
 
-    const promises = shoppingCart.map((article) => {
-        totalPrice += article.price * article.quantity
+    const promises = shoppingCart.map((order) => {
+        totalPrice += Number(order.total_price)
         ArticlesService.manageStock(
-            article.quantity,
-            article.article_id,
+            order.quantity,
+            order.article_id,
             'bought',
             connection
         )

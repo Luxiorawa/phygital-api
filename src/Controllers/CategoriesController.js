@@ -32,11 +32,11 @@ exports.createCategory = async (req, res) => {
 
     req.body.image_url ? (categoryObject.image_url = req.body.image_url) : null
 
-    const createdCategoryId = await CategoriesService.createCategory(
+    const insertedCategoryId = await CategoriesService.createCategory(
         categoryObject
     )
 
-    return res.json({ status: `Success`, createdId: createdCategoryId })
+    return res.json({ status: `Success`, insertedCategoryId: insertedCategoryId })
 }
 
 exports.updateCategory = async (req, res) => {
@@ -50,12 +50,12 @@ exports.updateCategory = async (req, res) => {
     req.body.name ? (categoryObject.name = req.body.name) : null
     req.body.image_url ? (categoryObject.image_url = req.body.image_url) : null
 
-    const categoryIdUpdated = await CategoriesService.updateCategory(
+    const isCategoryUpdated = await CategoriesService.updateCategory(
         categoryObject,
-        req.param.category_id
+        req.params.category_id
     )
 
-    return res.json({ status: 'Success', results: categoryIdUpdated })
+    return res.json({ status: 'Success', isCategoryUpdated: isCategoryUpdated })
 }
 
 exports.deleteCategory = async (req, res) => {
@@ -65,9 +65,9 @@ exports.deleteCategory = async (req, res) => {
         return res.status(422).json({ errors: errors.array() })
     }
 
-    const deletedCategory = await CategoriesService.deleteCategory(
+    const isCategoryDeleted = await CategoriesService.deleteCategory(
         req.params.category_id
     )
 
-    return res.json({ status: 'Success', deletedOrderId: deletedCategory })
+    return res.json({ status: 'Success', isCategoryDeleted: isCategoryDeleted })
 }

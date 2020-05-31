@@ -3,14 +3,16 @@ const router = express.Router()
 const jwt = require('jsonwebtoken')
 
 router.all('*', (req, res, next) => {
-    if (req.url == '/users/login' && req.method == 'POST') {
-        next()
-    } else {
+
+    if (req.url.search('auth') > 0 && req.method == 'POST') next()
+    else if (req.url.search(`api-docs`) > 0 && req.method == 'GET') next()
+    else if (req.url.search('sections') > 0 && req.method == 'GET') next()
+    else if (req.url.search('shelves') > 0 && req.method == 'GET') next()
+    else {
         let token
         if (req.headers.authorization) {
             token = req.headers.authorization
         }
-        console.log(token)
 
         jwt.verify(token, process.env.JWT_KEY, function (err, decoded) {
             if (err) res.status(500).send('Failed to authenticate token')
@@ -19,6 +21,7 @@ router.all('*', (req, res, next) => {
                     id: decoded.user.id,
                     username: decoded.user.username,
                 }
+                console.log(req.session.user)
                 next()
             }
         })

@@ -11,29 +11,6 @@ router.get(
     UserController.getUser
 )
 
-router.post(
-    '/login',
-    [
-        body('username').optional().isString(),
-        body('email').optional().isString(),
-        body('password').isString().isLength(1),
-    ],
-    UserController.login
-)
-
-router.post(
-    '/',
-    [
-        body('last_name').isString().isLength(1),
-        body('first_name').isString().isLength(1),
-        body('email').isString().isLength(1),
-        body('phone_number').isString().isLength(1),
-        body('username').isString().isLength(1),
-        body('password').isString().isLength(1),
-    ],
-    UserController.createUser
-)
-
 router.put(
     '/:user_id',
     [

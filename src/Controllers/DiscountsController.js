@@ -22,13 +22,10 @@ exports.getDiscount = async (req, res) => {
 exports.createDiscount = async (req, res) => {
     const errors = validationResult(req)
 
-    if (
-        !errors.isEmpty() ||
-        req.body.discount_type != 'flat' ||
-        req.body.discount_type != 'percentage' ||
-        (!req.body.category_id && !req.body.article_id)
-    ) {
-        return res.status(422).json({ errors: errors.array() })
+    if (!errors.isEmpty() || (req.body.discount_type != 'flat' && req.body.discount_type != 'percentage') || (!req.body.category_id && !req.body.article_id)) {
+        return (!errors.isEmpty()
+            ? res.status(422).json({ status: 'Failed', errors: errors.array() })
+            : res.status(422).json({ status: 'Failed', errors: "missing a category_id or article_id" }))
     }
 
     let discountObject = {
@@ -49,11 +46,11 @@ exports.createDiscount = async (req, res) => {
         ? (discountObject.minimum_value = req.body.minimum_value)
         : null
 
-    const createdDiscountId = await DiscountsService.createDiscount(
+    const insertedDiscountId = await DiscountsService.createDiscount(
         discountObject
     )
 
-    return res.json({ status: `Success`, createdId: createdDiscountId })
+    return res.json({ status: `Success`, insertedDiscountId: insertedDiscountId })
 }
 
 exports.updateDiscount = async (req, res) => {
@@ -85,12 +82,12 @@ exports.updateDiscount = async (req, res) => {
         ? (discountObject.minimum_value = req.body.minimum_value)
         : null
 
-    const updatedDiscount = await DiscountsService.updateDiscount(
+    const isDiscountUpdated = await DiscountsService.updateDiscount(
         discountObject,
         req.params.discount_id
     )
 
-    return res.json({ status: 'Success', updated: updatedDiscount })
+    return res.json({ status: 'Success', isDiscountUpdated: isDiscountUpdated })
 }
 
 exports.deleteDiscount = async (req, res) => {
@@ -100,9 +97,14 @@ exports.deleteDiscount = async (req, res) => {
         return res.status(422).json({ errors: errors.array() })
     }
 
-    let deletedDiscount = await DiscountsService.deleteDiscount(
-        req.param.discount_id
+    let isDiscountDeleted = await DiscountsService.deleteDiscount(
+        req.params.discount_id
     )
 
-    return res.json({ status: 'Success', deletedDiscount: deletedDiscount })
+    if(isDiscountDeleted) {
+        return res.json({ status: 'Success', isDiscountDeleted: isDiscountDeleted })
+    }
+    else {
+        return res.json({ status: 'Failed', message: "No discount were deleted (ID not found)" })
+    }
 }

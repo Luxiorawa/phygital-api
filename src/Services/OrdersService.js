@@ -19,7 +19,7 @@ exports.getOrdersByUserId = (userId) => {
 
 exports.getOrdersHistory = (userId) => {
     return MysqlMiddleware.selectList(
-        `SELECT * FROM orders WHERE user_id = ? AND state != 'COMPLETED'`,
+        `SELECT * FROM orders WHERE user_id = ? AND state = 'COMPLETED'`,
         userId
     )
 }
@@ -58,6 +58,7 @@ exports.fixQuantityIfArticleAlreadyOrdered = async (
     userId,
     articleId,
     quantityRequested,
+    discountId = null,
     connection = null
 ) => {
     try {
@@ -71,11 +72,13 @@ exports.fixQuantityIfArticleAlreadyOrdered = async (
         if (quantity) {
             // Fix quantity
             let realQuantity = parseInt(quantity) + parseInt(quantityRequested)
-            await this.updateOrder(
-                { quantity: realQuantity },
-                query.order_id,
-                connection
-            )
+            let orderObject = {
+                quantity: realQuantity,
+            }
+
+            discountId ? (orderObject.discount_id = discountId) : null
+
+            await this.updateOrder(orderObject, query.order_id, connection)
             return true
         } else {
             return false

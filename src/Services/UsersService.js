@@ -15,14 +15,14 @@ exports.createUser = (userObject) => {
 }
 
 exports.updateUser = (userObject, userId) => {
-    return MysqlMiddleware.update(`UPDATE users SET ? WHERE id = ?`, [
+    return MysqlMiddleware.update(`UPDATE users SET ? WHERE user_id = ?`, [
         userObject,
         userId,
     ])
 }
 
 exports.deleteUser = (userId) => {
-    return MysqlMiddleware.delete(`DELETE FROM users WHERE id = ?`, [userId])
+    return MysqlMiddleware.delete(`DELETE FROM users WHERE user_id = ?`, [userId])
 }
 
 exports.getUserByEmail = (email) => {
@@ -35,4 +35,15 @@ exports.getUserByUsername = (username) => {
     return MysqlMiddleware.select(`SELECT * FROM users WHERE username = ?`, [
         username,
     ])
+}
+
+exports.checkEmailAvailability = async (email) => {
+    let query = await MysqlMiddleware.select(`SELECT COUNT(user_id) AS count FROM users WHERE email = ?`, email)
+
+    if(query && query.count > 0) {
+        return false;
+    }
+    else {
+        return true;
+    }
 }

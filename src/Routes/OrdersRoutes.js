@@ -5,15 +5,17 @@ const { body, param } = require('express-validator')
 
 router.get('/', OrdersController.getOrders)
 
+router.get('/getByUserId', OrdersController.getOrdersByUserId)
+
+router.get('/getOrdersHistory', OrdersController.getOrdersHistory)
+
+router.get('/getShoppingCart', OrdersController.getShoppingCart)
+
 router.get(
     '/:order_id',
     [param('order_id').isInt().isLength(1)],
     OrdersController.getOrder
 )
-
-router.get('/getByUserId', OrdersController.getOrdersByUserId)
-
-router.get('/getOrdersHistory', OrdersController.getOrdersHistory)
 
 router.post('/buyShoppingCart', OrdersController.buyShoppingCart)
 
