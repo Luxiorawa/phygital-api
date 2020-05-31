@@ -51,11 +51,11 @@ module.exports = {
             name: "Clément Noël",
             email: "296337@supinfo.com"
         },
-        version: '1.3.0',
+        version: '1.3.1',
     },
     servers: [
         {
-            url: "http://10.10.10.145:3000",
+            url: "http://10.10.10.140",
             description: 'production',
         },
         {
