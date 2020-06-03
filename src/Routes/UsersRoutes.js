@@ -11,6 +11,11 @@ router.get(
     UserController.getUser
 )
 
+router.post(
+    '/refreshQRCode',
+    UserController.refreshQRCode
+)
+
 router.put(
     '/:user_id',
     [

@@ -15,7 +15,7 @@ router.all('*', (req, res, next) => {
         }
 
         jwt.verify(token, process.env.JWT_KEY, function (err, decoded) {
-            if (err) res.status(500).send('Failed to authenticate token')
+            if (err) res.status(500).send(`Failed to authenticate token : ${err}`)
             if (decoded) {
                 req.session.user = {
                     id: decoded.user.id,

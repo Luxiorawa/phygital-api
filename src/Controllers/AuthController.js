@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const qrcode = require('qrcode')
 const hash = promisify(bcrypt.hash)
+const moment = require('moment')
 
 exports.login = async (req, res) => {
     const errors = validationResult(req)
@@ -34,7 +35,8 @@ exports.login = async (req, res) => {
             process.env.JWT_KEY
         )
 
-        let qrcodeDataURL = await qrcode.toDataURL(token)
+        let qrCodeSeed = `${token},${moment().valueOf()}`
+        let qrcodeDataURL = await qrcode.toDataURL(qrCodeSeed)
 
         return res.json({
             status: 'Success',

@@ -5,6 +5,7 @@ const getUsers = require('./Paths/Users/getUsers')
 const getUser = require('./Paths/Users/getUser')
 const putUser = require('./Paths/Users/putUser')
 const deleteUser = require('./Paths/Users/deleteUser')
+const refreshQRCode = require('./Paths/Users/refreshQRCode')
 
 const getArticles = require('./Paths/Articles/getArticles')
 const getByShelfId = require('./Paths/Articles/getByShelfId')
@@ -95,6 +96,7 @@ module.exports = {
 
         'GET /users': getUsers,
         'GET /users/:userId': getUser,
+        'POST /users/refreshQRCode': refreshQRCode,
         'PUT /users/:userId' : putUser,
         'DELETE /users/:userId' : deleteUser,
 

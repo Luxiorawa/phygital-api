@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const qrcode = require('qrcode')
 const hash = promisify(bcrypt.hash)
+const moment = require('moment')
 
 exports.getUsers = async (req, res) => {
     let users = await UsersService.getAllUsers()
@@ -30,6 +31,31 @@ exports.getUser = async (req, res) => {
     user && user.password ? delete user.password : null
 
     return res.json({ status: 'Success', results: user })
+}
+
+exports.refreshQRCode = async (req, res) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() })
+    }
+
+    const token = req.headers && req.headers.authorization ? req.headers.authorization : null
+
+    if(token) {
+        let qrCodeSeed = `${token},${moment().valueOf()}`
+        let qrcodeDataURL = await qrcode.toDataURL(qrCodeSeed)
+
+        return res.json({
+            status: 'Success',
+            qrcode: qrcodeDataURL
+        })
+    }
+    else {
+        return res.status(422).json({
+            status: 'Failed'
+        })
+    }
 }
 
 exports.updateUser = async (req, res) => {
