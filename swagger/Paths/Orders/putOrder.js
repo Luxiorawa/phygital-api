@@ -18,7 +18,7 @@ module.exports = {
                             'optional': [
                                 "shopping_cart_id",
                                 "article_id",
-                                "user_id",
+                                "discount_id",
                                 "state",
                                 "price",
                             ],
@@ -29,7 +29,7 @@ module.exports = {
                                 "article_id": {
                                     type: 'integer'
                                 },
-                                "user_id" : {
+                                "discount_id" : {
                                     type: 'integer'
                                 },
                                 "state": {

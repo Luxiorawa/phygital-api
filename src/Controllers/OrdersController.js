@@ -122,7 +122,7 @@ exports.updateOrder = async (req, res) => {
         ? (orderObject.shopping_cart_id = req.body.shopping_cart_id)
         : null
     req.body.article_id ? (orderObject.article_id = req.body.article_id) : null
-    req.body.user_id ? (orderObject.user_id = req.body.user_id) : null
+    req.body.discount_id ? (orderObject.discount_id = req.body.discount_id) : null
     req.body.state ? (orderObject.state = req.body.state) : null
     req.body.price ? (orderObject.price = req.body.price) : null
     req.body.quantity ? (orderObject.quantity = req.body.quantity) : null
