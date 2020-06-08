@@ -62,14 +62,13 @@ exports.addToShoppingCart = async (req, res) => {
 
         await ArticlesService.manageStock(req.body.quantity, req.body.article_id, 'reserved', connection)
 
-            let alreadyOrdered =
-            OrdersService.fixQuantityIfArticleAlreadyOrdered(
-                req.session.user.id,
-                req.body.article_id,
-                req.body.quantity,
-                discountId,
-                connection
-            )
+        let alreadyOrdered = await OrdersService.fixQuantityIfArticleAlreadyOrdered(
+            req.session.user.id,
+            req.body.article_id,
+            req.body.quantity,
+            discountId,
+            connection
+        )
 
         if (alreadyOrdered === true) {
             // Recheck promo et valeur finale (price)
