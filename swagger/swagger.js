@@ -4,6 +4,7 @@ const register = require('./Paths/Auth/register')
 const getUsers = require('./Paths/Users/getUsers')
 const getUser = require('./Paths/Users/getUser')
 const putUser = require('./Paths/Users/putUser')
+const isInShop = require('./Paths/Users/isInShop')
 const deleteUser = require('./Paths/Users/deleteUser')
 const refreshQRCode = require('./Paths/Users/refreshQRCode')
 
@@ -98,6 +99,7 @@ module.exports = {
         'GET /users/:userId': getUser,
         'POST /users/refreshQRCode': refreshQRCode,
         'PUT /users/:userId' : putUser,
+        'PUT /users/isInShop': isInShop,
         'DELETE /users/:userId' : deleteUser,
 
         'GET /articles' : getArticles,
