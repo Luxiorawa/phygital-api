@@ -16,6 +16,15 @@ router.post(
     UserController.refreshQRCode
 )
 
+
+router.put(
+    '/isInShop',
+    [
+        body('is_in_shop').isInt()
+    ],
+    UserController.isInShop
+)
+
 router.put(
     '/:user_id',
     [
