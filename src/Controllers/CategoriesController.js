@@ -1,73 +1,84 @@
-const CategoriesService = require('./../Services/CategoriesService')
-const { validationResult } = require('express-validator')
+const CategoriesService = require("./../Services/CategoriesService");
+const { validationResult } = require("express-validator");
 
 exports.getCategories = async (req, res) => {
-    const categories = await CategoriesService.getCategories()
+	const categories = await CategoriesService.getCategories();
 
-    return res.json({ status: 'Success', results: categories })
-}
+	return res.json({ status: "Success", results: categories });
+};
 
 exports.getCategory = async (req, res) => {
-    const errors = validationResult(req)
+	const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() })
-    }
+	if (!errors.isEmpty()) {
+		return res.status(422).json({ errors: errors.array() });
+	}
 
-    const category = await CategoriesService.getCategory(req.params.category_id)
+	const category = await CategoriesService.getCategory(
+		req.params.category_id
+	);
 
-    return res.json({ status: 'Success', results: category })
-}
+	return res.json({ status: "Success", results: category });
+};
 
 exports.createCategory = async (req, res) => {
-    const errors = validationResult(req)
+	const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() })
-    }
+	if (!errors.isEmpty()) {
+		return res.status(422).json({ errors: errors.array() });
+	}
 
-    const categoryObject = {
-        name: req.body.name,
-    }
+	const categoryObject = {
+		name: req.body.name
+	};
 
-    req.body.image_url ? (categoryObject.image_url = req.body.image_url) : null
+	req.body.image_url ? (categoryObject.image_url = req.body.image_url) : null;
 
-    const insertedCategoryId = await CategoriesService.createCategory(
-        categoryObject
-    )
+	const insertedCategoryId = await CategoriesService.createCategory(
+		categoryObject
+	);
 
-    return res.json({ status: `Success`, insertedCategoryId: insertedCategoryId })
-}
+	return res.json({
+		status: `Success`,
+		insertedCategoryId: insertedCategoryId
+	});
+};
 
 exports.updateCategory = async (req, res) => {
-    const errors = validationResult(req)
+	const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() })
-    }
+	if (!errors.isEmpty()) {
+		return res.status(422).json({ errors: errors.array() });
+	}
 
-    const categoryObject = {}
-    req.body.name ? (categoryObject.name = req.body.name) : null
-    req.body.image_url ? (categoryObject.image_url = req.body.image_url) : null
+	const categoryObject = {};
+	req.body.name ? (categoryObject.name = req.body.name) : null;
+	req.body.image_url ? (categoryObject.image_url = req.body.image_url) : null;
 
-    const isCategoryUpdated = await CategoriesService.updateCategory(
-        categoryObject,
-        req.params.category_id
-    )
+	const isCategoryUpdated = await CategoriesService.updateCategory(
+		categoryObject,
+		req.params.category_id
+	);
 
-    return res.json({ status: 'Success', isCategoryUpdated: isCategoryUpdated })
-}
+	return res.json({
+		status: "Success",
+		isCategoryUpdated: isCategoryUpdated
+	});
+};
 
 exports.deleteCategory = async (req, res) => {
-    const errors = validationResult(req)
+	const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() })
-    }
+	if (!errors.isEmpty()) {
+		return res.status(422).json({ errors: errors.array() });
+	}
 
-    const isCategoryDeleted = await CategoriesService.deleteCategory(
-        req.params.category_id
-    )
+	const isCategoryDeleted = await CategoriesService.deleteCategory(
+		req.params.category_id
+	);
 
-    return res.json({ status: 'Success', isCategoryDeleted: isCategoryDeleted })
-}
+	return res.json({
+		status: "Success",
+		isCategoryDeleted: isCategoryDeleted
+	});
+};

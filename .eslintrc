@@ -1,37 +1,23 @@
 {
-  "env": {
-    "commonjs": true,
-    "es2021": true,
-    "node": true
-  },
-  "plugins": [
-    "security"
-  ],
-  "extends": [
-    "eslint:recommended",
-    "plugin:node/recommended-script",
-    "plugin:security/recommended"
-  ],
-  "parserOptions": {
-    "ecmaVersion": 2020
-  },
-  "rules": {
-    "indent": [
-      "warn",
-      "tab"
-    ],
-    "linebreak-style": [
-      "error",
-      "windows"
-    ],
-    "node/exports-style": [
-      "error",
-      "module.exports"
-    ],
-    "node/file-extension-in-import": [
-      "error",
-      "always"
-    ],
-    "node/no-deprecated-api": "warn"
-  }
+	"env": {
+		"commonjs": true,
+		"es2021": true,
+		"node": true
+	},
+	"plugins": ["security"],
+	"extends": [
+		"eslint:recommended",
+		"plugin:node/recommended-script",
+		"plugin:security/recommended"
+	],
+	"parserOptions": {
+		"ecmaVersion": 2020
+	},
+	"rules": {
+		"indent": ["warn", "tab"],
+		"linebreak-style": ["error", "windows"],
+		"node/exports-style": ["error", "module.exports"],
+		"node/file-extension-in-import": ["error", "always"],
+		"node/no-deprecated-api": "warn"
+	}
 }
